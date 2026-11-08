@@ -1,8 +1,31 @@
-# Dancing Brows
+# Brow Instrument
 
 ![demo](assets/demo.gif)  <!-- TODO: record a ~10 s clip and save as assets/demo.gif -->
 
 Your hands puppeteer a cartoon eyebrow on a live webcam feed, and the brow's height plays a note. A small theremin you conduct with your face and fingers.
+
+## Web version (new)
+
+`web/` is a browser version you can open from the homepage, no install. It adds a skippable tutorial, an in-page handbook, a dark gesture.live-style stage, and **mood effects**: two open, arched brows read as *happy* (giggle + bouncing emoji), two pinched or drooping brows as *sad* (tears + a sad "womp womp"), and brows that disagree as *confused* (boing + floating question marks), each with a cue like "Are we sad now?".
+
+```bash
+cd web
+python3 -m http.server 8000      # then open http://localhost:8000  (camera needs localhost or https)
+npm test                         # 33 unit tests on the brow maths, hand identity, moods and tutorial logic
+```
+
+- **Try the demo** needs no camera: scripted hands and a drawn face run the same brow, mood and sound code.
+- **Start camera** uses MediaPipe FaceLandmarker + HandLandmarker in the browser. Models and scripts load from public CDNs; video never leaves your machine.
+- Deploy: the workflow in `.github/workflows/pages.yml` publishes `web/` to GitHub Pages (Settings > Pages > Source: GitHub Actions).
+- How the mood is decided: `web/js/expression.js`. The thresholds were chosen by feel, not measured on users. Sounds are synthesised with the Web Audio API (`web/js/audio.js`).
+- Screenshots below are from **demo mode** (simulated hands and a drawn face), not a real camera session.
+- TODO: record a real-camera demo GIF of the three moods and put the live link here.
+
+| Happy | Sad | Confused |
+|---|---|---|
+| ![happy](assets/web-demo-happy.png) | ![sad](assets/web-demo-sad.png) | ![confused](assets/web-demo-confused.png) |
+
+The Python/OpenCV app below is the original desktop prototype and the part that is benchmarked.
 
 ## The question
 
@@ -85,7 +108,7 @@ tests/        pytest on the math
 
 ## Next steps
 
-Browser version (deployed demo), more tests, per-user calibration.
+Per-user calibration, a "mimic the expression" game mode, and a usability check with a few new users. (A browser version now exists in `web/`.)
 
 ## License
 
