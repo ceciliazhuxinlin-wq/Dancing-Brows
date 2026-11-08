@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dancing Brows</title>
+<meta name="description" content="Puppeteer cartoon eyebrows with your hands. Happy, sad and confused brows trigger giggles, tears and boings. Runs in your browser.">
+<meta name="theme-color" content="#06070a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306070a'/%3E%3Cpath d='M4 13q6-8 11-1M17 12q5-7 11 1' stroke='%23ffb38a' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="logo" href="#home" aria-label="Dancing Brows home">
+    <svg viewBox="0 0 40 20" width="34" height="17" aria-hidden="true"><path d="M2 13q7-12 15-1M23 12q8-11 15 1" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg>
+    <span>Dancing Brows</span>
+  </a>
+  <nav aria-label="Main">
+    <button class="link" id="nav-how" type="button">How to play</button>
+    <button class="link" id="nav-handbook" type="button">Handbook</button>
+    <a class="link" href="https://github.com/ceciliazhuxinlin-wq/Dancing-Brows" target="_blank" rel="noopener">GitHub</a>
+    <span class="ver" title="Web version">v2.0</span>
+  </nav>
+</header>
+
+<!-- Tutorial strip: sits at the top, skippable, completes itself when you do the thing -->
+<section class="coach" id="coach" hidden aria-label="Tutorial" aria-live="polite">
+  <div class="coach-main">
+    <span class="coach-emoji" id="coach-emoji">✋</span>
+    <div class="coach-text"><b id="coach-title"></b><span id="coach-body"></span></div>
+  </div>
+  <div class="coach-ctl">
+    <div class="dots" id="coach-dots" aria-hidden="true"></div>
+    <button class="btn ghost sm" id="coach-back" type="button">Back</button>
+    <button class="btn sm" id="coach-next" type="button">Next</button>
+    <button class="btn ghost sm" id="coach-skip" type="button">Skip tutorial</button>
+  </div>
+</section>
+
+<main id="main">
+  <!-- ============ HOME ============ -->
+  <div id="home">
+    <section class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">A tiny expressive playground</p>
+        <h1>Make your eyebrows <em>dance</em>.</h1>
+        <p class="lead">Your hands puppeteer a pair of cartoon brows on top of your face. Open wide for a happy arch, pinch for a sad little U, and make them disagree to look gloriously confused. Each mood has its own sound and emoji.</p>
+        <div class="cta">
+          <button class="btn big" id="start-live" type="button">Start camera</button>
+          <button class="btn ghost big" id="start-demo" type="button">Try the demo <small>no camera</small></button>
+        </div>
+        <p class="fine">Runs entirely in your browser. Your video is never uploaded.</p>
+      </div>
+      <figure class="hero-card" aria-label="Animated preview of the three moods">
+        <svg id="hero-svg" viewBox="0 0 400 300" role="img" aria-label="A cartoon face whose brows change mood"></svg>
+        <figcaption><span id="hero-cue">Make a face ✨</span></figcaption>
+      </figure>
+    </section>
+
+    <section class="moods" aria-label="Moods">
+      <article class="mood-card" data-mood="happy"><div class="big-emoji">😄</div><h2>Happy</h2><p>Both hands open, brows in a curvy arch.</p><span class="pill">giggle</span></article>
+      <article class="mood-card" data-mood="sad"><div class="big-emoji">🥺</div><h2>Sad</h2><p>Both hands pinched, brows in a low U.</p><span class="pill">tears + “womp womp”</span></article>
+      <article class="mood-card" data-mood="confused"><div class="big-emoji">🤨</div><h2>Confused</h2><p>One brow up, one down. They disagree.</p><span class="pill">boing</span></article>
+    </section>
+
+    <section class="how" aria-label="How it works">
+      <h2>How it works</h2>
+      <ol>
+        <li><b>1 · Track.</b> MediaPipe finds your face and both hands in the camera image.</li>
+        <li><b>2 · Map.</b> Thumb-to-finger distance sets a brow's height and shape. Hand tilt rotates it. Hand spacing moves the brows apart.</li>
+        <li><b>3 · React.</b> The two brows together are read as a mood, which plays a sound and bounces out emoji.</li>
+      </ol>
+    </section>
+
+    <section class="handbook" id="handbook" aria-label="Handbook">
+      <h2>Handbook</h2>
+      <p class="muted">Everything you need to check in one place. You can open this again any time with <kbd>H</kbd>.</p>
+      <div id="handbook-body" class="hb"></div>
+    </section>
+
+    <footer>
+      <p>Part of the Brow Instrument project. Python desktop version and source on <a href="https://github.com/ceciliazhuxinlin-wq/Dancing-Brows" target="_blank" rel="noopener">GitHub</a>. Tracking by <a href="https://ai.google.dev/edge/mediapipe" target="_blank" rel="noopener">MediaPipe</a>. Look inspired by <a href="https://gesture.live/" target="_blank" rel="noopener">gesture.live</a>.</p>
+    </footer>
+  </div>
+
+  <!-- ============ STAGE ============ -->
+  <div id="stage-wrap" hidden>
+    <div class="stage" id="stage">
+      <video id="video" playsinline muted hidden></video>
+      <canvas id="cv" aria-label="Camera view with cartoon eyebrows"></canvas>
+      <div class="cue" id="cue" role="status" aria-live="polite">Make a face ✨</div>
+      <div class="badge" id="badge" aria-hidden="true"></div>
+      <div id="emoji-layer" aria-hidden="true"></div>
+      <div class="chips" id="chips"></div>
+      <div class="countdown" id="countdown" hidden><span id="countdown-n">3</span><small>Relax your brows</small></div>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+      <div class="loading" id="loading"><div class="spinner" aria-hidden="true"></div><p id="loading-text">loading instrument…</p></div>
+      <div class="errorbox" id="errorbox" hidden><h2 id="error-title"></h2><p id="error-body"></p><div class="cta"><button class="btn" id="error-demo" type="button">Try the demo instead</button><button class="btn ghost" id="error-back" type="button">Back</button></div></div>
+      <pre class="debug" id="debug" hidden></pre>
+    </div>
+
+    <div class="dock" id="dock">
+      <div class="group" id="style-chips" role="group" aria-label="Brow style"></div>
+      <div class="group">
+        <button class="tog" id="t-effects" type="button" aria-pressed="true" title="Mood sound effects">🎭 Effects</button>
+        <button class="tog" id="t-notes" type="button" aria-pressed="false" title="Brow height plays notes (M mutes all sound)">🎵 Notes</button>
+        <button class="tog" id="t-hide" type="button" aria-pressed="false" title="Paint over your real brows">🙈 Hide mine</button>
+        <button class="tog" id="t-debug" type="button" aria-pressed="false" title="Show tracking details (D)">🛠 Debug</button>
+      </div>
+      <div class="group">
+        <button class="btn sm" id="btn-capture" type="button">Capture my brows</button>
+        <button class="btn ghost sm" id="btn-handbook" type="button">Handbook</button>
+        <button class="btn ghost sm" id="btn-mute" type="button" aria-pressed="false">Mute</button>
+        <button class="btn ghost sm" id="btn-stop" type="button">Stop</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<aside class="drawer" id="drawer" aria-label="Handbook" aria-hidden="true">
+  <div class="drawer-head"><h2>Handbook</h2><button class="btn ghost sm" id="drawer-close" type="button">Close</button></div>
+  <div class="drawer-body hb" id="drawer-body"></div>
+</aside>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
