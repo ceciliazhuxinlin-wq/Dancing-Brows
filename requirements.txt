@@ -1,0 +1,4 @@
+# Python 3.9-3.12. mediapipe brings its own OpenCV (opencv-contrib-python), so it is not listed separately.
+mediapipe==0.10.14
+numpy<2
+sounddevice
