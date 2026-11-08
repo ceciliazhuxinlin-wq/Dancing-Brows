@@ -1,4 +1,4 @@
-# Brow Instrument
+# Dancing Brows
 
 ![demo](assets/demo.gif)  <!-- TODO: record a ~10 s clip and save as assets/demo.gif -->
 
