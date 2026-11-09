@@ -1,13 +1,14 @@
-// Turns the two cartoon brows into a mood: happy / sad / confused / neutral.
+// Turns the two cartoon brows into a mood: happy / sad / angry / confused / neutral.
 // Pure functions + a small state machine, unit tested in Node. Thresholds are chosen by feel, not measured.
 import { clip01 } from "./brow.js";
 
-export const MOODS = ["neutral", "happy", "sad", "confused"];
+export const MOODS = ["neutral", "happy", "sad", "angry", "confused"];
 
 /**
  * left/right: { t, curve, tiltDeg } from browParams().
  *  curve < 0 = arch (n), curve > 0 = bowl (U).  tiltDeg > 0 = rotated clockwise on screen.
- *  "Inner ends up" (worried / sad) = left brow tilted counter-clockwise, right brow clockwise.
+ *  "Inner ends up" (worried / sad, "/ \") = left brow tilted counter-clockwise, right brow clockwise.
+ *  "Inner ends down" (angry, "\ /") is the opposite: left clockwise, right counter-clockwise.
  * Returns scores 0..1.
  */
 export function moodScores(left, right) {
@@ -21,10 +22,12 @@ export function moodScores(left, right) {
   const asym = clip01((rawAsym - 0.35) / 0.65);                    // dead zone: two real hands are never perfectly matched
   const arch = clip01((0.1 - curve) / 0.45);                       // natural, curvy arch (hands about 3/4 open or more)
   const bowl = clip01((curve - 0.25) / 0.45);                      // low U shape (fingers mostly pinched)
-  const droop = clip01(innerUp / 25);                              // sad "worried" tilt
+  const droop = clip01(innerUp / 25);                              // sad "worried" tilt, inner ends up
+  const glare = clip01((-innerUp - 3) / 20);                       // angry tilt, inner ends down (same size as droop, opposite sign)
   return {
-    happy: arch * (1 - asym),
-    sad: Math.max(bowl, droop) * (1 - asym),
+    happy: arch * (1 - asym) * (1 - glare),                        // a clear glare beats a pretty arch or a pinch
+    sad: Math.max(bowl, droop) * (1 - asym) * (1 - glare),
+    angry: glare * (1 - asym),
     confused: asym,
   };
 }
@@ -40,12 +43,12 @@ export class MoodTracker {
   }
   _candidate(s) {
     if (s.confused >= this.enter) return "confused";
-    const best = s.happy >= s.sad ? "happy" : "sad";
+    const best = ["happy", "sad", "angry"].reduce((a, k) => (s[k] > s[a] ? k : a), "happy");   // ties keep the earlier mood
     return s[best] >= this.enter ? best : null;
   }
   /** scores may be null (no brows). Returns { mood, entered, fire, strength }. */
   update(scores, nowMs) {
-    const s = scores || { happy: 0, sad: 0, confused: 0 };
+    const s = { happy: 0, sad: 0, angry: 0, confused: 0, ...scores };       // missing keys count as 0
     const cand = this._candidate(s);
     let target;
     if (this.mood !== "neutral" && s[this.mood] >= this.exit && (!cand || cand === this.mood || s[cand] < s[this.mood] + 0.15)) target = this.mood;
@@ -74,11 +77,13 @@ export const CUES = {
   neutral: ["Make a face ✨", "Pinch and open your fingers to move your brows"],
   happy: ["Are we happy now? 😄", "Ooh, someone's in a good mood!", "Is that a giggle? 🥰"],
   sad: ["Are we sad now? 🥺", "Aww, what happened? 😢", "Do we need a tissue? 💧"],
+  angry: ["Uh oh… are we angry now? 😠", "Grr! Someone is grumpy 😤", "Those brows mean business 💢"],
   confused: ["Wait… are we confused? 🤨", "Goofy brows detected 🥴", "One brow says yes, one says no ❓"],
 };
 export const EMOJI = {
   happy: ["😄", "😆", "🥰", "✨"],
   sad: ["😢", "🥺", "💧", "😭"],
+  angry: ["😠", "💢", "😤", "🔥"],
   confused: ["🤨", "🥴", "❓", "😵‍💫"],
 };
 export function pickCue(mood, n = 0) { const a = CUES[mood]; return a[n % a.length]; }

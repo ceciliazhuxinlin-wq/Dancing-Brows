@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { browParams } from "../js/brow.js";
-import { moodScores, MoodTracker, pickCue } from "../js/expression.js";
+import { moodScores, MoodTracker, pickCue, MOODS, EMOJI } from "../js/expression.js";
+import { demoScript, LOOP_S } from "../js/demo.js";
 import { TutorialProgress, STEPS } from "../js/tutorial.js";
 
 const P = (pinch, tilt = 0) => browParams(pinch, tilt);
@@ -84,4 +85,40 @@ test("hands mostly pinched are enough for sad", () => {
 });
 test("a clearly mismatched pair is still confused", () => {
   assert.ok(moodScores(P(0.9), P(0.4)).confused >= 0.6);
+});
+
+// ---- angry: inner ends DOWN ("\ /"), the mirror image of sad (inner ends up, "/ \") ----
+test("inner ends down (glare) looks angry", () => {
+  const s = moodScores(P(0.55, 30), P(0.55, -30)); assert.equal(top(s), "angry"); assert.ok(s.angry > 0.9, JSON.stringify(s));
+});
+test("angry and sad are mirror images of each other", () => {
+  const sad = moodScores(P(0.55, -30), P(0.55, 30)), angry = moodScores(P(0.55, 30), P(0.55, -30));
+  assert.equal(top(sad), "sad"); assert.ok(sad.angry < 0.05, "sad pose is not angry");
+  assert.equal(top(angry), "angry"); assert.ok(angry.sad < 0.05, "angry pose is not sad");
+});
+test("a glare wins over a pinch (low U) and over a wide-open arch", () => {
+  assert.equal(top(moodScores(P(0.1, 28), P(0.1, -28))), "angry");
+  assert.equal(top(moodScores(P(1.0, 28), P(1.0, -28))), "angry");
+});
+test("a small tilt is not angry, and tilting the same way is confused, not angry", () => {
+  assert.ok(moodScores(P(0.55, 5), P(0.55, -5)).angry < 0.6);
+  const s = moodScores(P(0.6, 30), P(0.6, 30)); assert.ok(s.angry < 0.1 && s.confused > 0.6);
+});
+test("one hand mirrored into both brows can be angry", () => {
+  assert.equal(top(moodScores(P(0.55, 28), P(0.55, -28))), "angry");
+});
+test("angry fires once on entry, and switching straight from sad to angry works", () => {
+  const m = new MoodTracker(); const sad = { happy: 0, sad: 1, angry: 0, confused: 0 }, angry = { happy: 0, sad: 0, angry: 1, confused: 0 };
+  m.update(sad, 0); assert.equal(m.update(sad, 250).mood, "sad");
+  m.update(angry, 300); const r = m.update(angry, 560); assert.equal(r.mood, "angry"); assert.ok(r.entered && r.fire);
+  assert.ok(!m.update(angry, 700).fire);
+});
+test("every mood has cues and emoji", () => {
+  for (const k of MOODS) assert.ok(pickCue(k, 3).length > 3);
+  for (const k of MOODS.filter((x) => x !== "neutral")) assert.ok(EMOJI[k].length >= 3, k);
+});
+test("the demo script performs each mood in turn", () => {
+  const moodAt = (t) => { const s = demoScript(t); return top(moodScores(P(s.pinch[0], s.tilt[0]), P(s.pinch[1], s.tilt[1]))); };
+  assert.deepEqual([2, 6, 10, 14].map(moodAt), ["happy", "sad", "angry", "confused"]);
+  assert.deepEqual(demoScript(LOOP_S + 2).pinch, demoScript(2).pinch);          // it loops
 });
