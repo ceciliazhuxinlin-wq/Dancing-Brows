@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dancing Brows</title>
-<meta name="description" content="Puppeteer cartoon eyebrows with your hands. Happy, sad and confused brows trigger giggles, tears and boings. Runs in your browser.">
+<meta name="description" content="Puppeteer cartoon eyebrows with your hands. Happy, sad, angry and confused brows trigger giggles, tears, growls and boings. Runs in your browser.">
 <meta name="theme-color" content="#06070a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2306070a'/%3E%3Cpath d='M4 13q6-8 11-1M17 12q5-7 11 1' stroke='%23ffb38a' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
@@ -46,14 +46,14 @@
       <div class="hero-text">
         <p class="eyebrow">A tiny expressive playground</p>
         <h1>Make your eyebrows <em>dance</em>.</h1>
-        <p class="lead">Your hands puppeteer a pair of cartoon brows on top of your face. Open wide for a happy arch, pinch for a sad little U, and make them disagree to look gloriously confused. Each mood has its own sound and emoji.</p>
+        <p class="lead">Your hands puppeteer a pair of cartoon brows on top of your face. Open wide for a happy arch, pinch for a sad little U, slope them down for an angry glare, and make them disagree to look gloriously confused. Each mood has its own sound and emoji.</p>
         <div class="cta">
           <button class="btn big" id="start-live" type="button">Start camera</button>
           <button class="btn ghost big" id="start-demo" type="button">Try the demo <small>no camera</small></button>
         </div>
         <p class="fine">Runs entirely in your browser. Your video is never uploaded.</p>
       </div>
-      <figure class="hero-card" aria-label="Animated preview of the three moods">
+      <figure class="hero-card" aria-label="Animated preview of the moods">
         <svg id="hero-svg" viewBox="0 0 400 300" role="img" aria-label="A cartoon face whose brows change mood"></svg>
         <figcaption><span id="hero-cue">Make a face ✨</span></figcaption>
       </figure>
@@ -62,6 +62,7 @@
     <section class="moods" aria-label="Moods">
       <article class="mood-card" data-mood="happy"><div class="big-emoji">😄</div><h2>Happy</h2><p>Both hands open, brows in a curvy arch.</p><span class="pill">giggle</span></article>
       <article class="mood-card" data-mood="sad"><div class="big-emoji">🥺</div><h2>Sad</h2><p>Both hands pinched, brows in a low U.</p><span class="pill">tears + “womp womp”</span></article>
+      <article class="mood-card" data-mood="angry"><div class="big-emoji">😠</div><h2>Angry</h2><p>Brows slope down towards the nose, like \ /.</p><span class="pill">growl + stomp</span></article>
       <article class="mood-card" data-mood="confused"><div class="big-emoji">🤨</div><h2>Confused</h2><p>One brow up, one down. They disagree.</p><span class="pill">boing</span></article>
     </section>
 

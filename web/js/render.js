@@ -123,7 +123,7 @@ export function drawDemoFace(ctx, face, W, H, mood) {
   ctx.fillStyle = "#2b2b2f";
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(cx + s * face.faceW * 0.26 + yawShift * 0.3, face.eyeY, face.faceW * 0.045, face.faceH * 0.035, 0, 0, 6.3); ctx.fill(); }
   ctx.strokeStyle = "#a9715a"; ctx.lineWidth = 4; ctx.lineCap = "round";
-  const my = face.eyeY + face.faceH * 0.38, mw = face.faceW * 0.2, bend = mood === "happy" ? 1 : mood === "sad" ? -1 : mood === "confused" ? 0.2 : 0.25;
+  const my = face.eyeY + face.faceH * 0.38, mw = face.faceW * 0.2, bend = mood === "happy" ? 1 : mood === "sad" ? -1 : mood === "angry" ? -0.35 : mood === "confused" ? 0.2 : 0.25;
   ctx.beginPath(); ctx.moveTo(cx - mw + yawShift * 0.2, my); ctx.quadraticCurveTo(cx + yawShift * 0.2, my + bend * face.faceH * 0.1, cx + mw + yawShift * 0.2, my + (mood === "confused" ? -6 : 0)); ctx.stroke();
   ctx.fillStyle = "rgba(240,140,140,.35)";
   for (const s of [-1, 1]) { ctx.beginPath(); ctx.ellipse(cx + s * face.faceW * 0.33, face.eyeY + face.faceH * 0.2, face.faceW * 0.07, face.faceH * 0.04, 0, 0, 6.3); ctx.fill(); }

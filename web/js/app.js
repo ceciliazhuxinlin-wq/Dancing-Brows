@@ -97,13 +97,17 @@ function burst(mood, face) {
     const base = "translate(-50%,-50%)";
     const frames = mood === "sad"
       ? [{ transform: `${base} scale(.3)`, opacity: 0 }, { transform: `${base} translateY(10px) scale(1)`, opacity: 1, offset: 0.15 }, { transform: `${base} translate(${dx / 4}px, ${rnd(140, 230)}px) scale(.9)`, opacity: 0 }]
+      : mood === "angry"
+        ? [{ transform: `${base} scale(.2) rotate(0)`, opacity: 0 }, { transform: `${base} translate(${dx / 6}px,-25px) scale(1.5) rotate(${rot}deg)`, opacity: 1, offset: 0.18 },
+           { transform: `${base} translate(${dx / 6 + 8}px,-30px) scale(1.4) rotate(${-rot}deg)`, opacity: 1, offset: 0.3 }, { transform: `${base} translate(${dx / 6 - 8}px,-34px) scale(1.4) rotate(${rot}deg)`, opacity: 1, offset: 0.42 },
+           { transform: `${base} translate(${dx / 4}px,-80px) scale(1) rotate(${rot}deg)`, opacity: 0 }]
       : mood === "confused"
         ? [{ transform: `${base} scale(.3) rotate(0)`, opacity: 0 }, { transform: `${base} translate(${dx / 3}px,-50px) scale(1.15) rotate(${rot}deg)`, opacity: 1, offset: 0.3 }, { transform: `${base} translate(${dx / 2}px,-70px) scale(1) rotate(${-rot}deg)`, opacity: 1, offset: 0.65 }, { transform: `${base} translate(${dx}px,-120px) scale(.9) rotate(${rot}deg)`, opacity: 0 }]
         : [{ transform: `${base} scale(.3)`, opacity: 0 }, { transform: `${base} translate(${dx / 3}px,-70px) scale(1.25) rotate(${rot}deg)`, opacity: 1, offset: 0.28 }, { transform: `${base} translate(${dx / 2}px,-30px) scale(1) rotate(${-rot}deg)`, opacity: 1, offset: 0.5 }, { transform: `${base} translate(${dx}px,-150px) scale(1) rotate(${rot}deg)`, opacity: 0 }];
     const a = el.animate(frames, { duration: reduceMotion ? 600 : dur, delay: reduceMotion ? 0 : delay, easing: "cubic-bezier(.25,.8,.35,1)", fill: "both" });
     a.onfinish = () => el.remove();
   }
-  const badge = $("#badge"); badge.textContent = { happy: "😄", sad: "🥺", confused: "🤨" }[mood]; badge.classList.remove("pop"); void badge.offsetWidth; badge.classList.add("pop");
+  const badge = $("#badge"); badge.textContent = { happy: "😄", sad: "🥺", angry: "😠", confused: "🤨" }[mood]; badge.classList.remove("pop"); void badge.offsetWidth; badge.classList.add("pop");
 }
 
 /* ---------------- Main loop ---------------- */
@@ -185,7 +189,7 @@ function startLoop() {
       const sc = params ? moodScores(params[0], params[1]) : null, au = face?.au;
       $("#debug").textContent = [
         `fps ${fps.toFixed(0)}   ${S.mode}`, `mood ${ms.mood}`,
-        sc ? `happy ${sc.happy.toFixed(2)} sad ${sc.sad.toFixed(2)} conf ${sc.confused.toFixed(2)}` : "scores –",
+        sc ? `happy ${sc.happy.toFixed(2)} sad ${sc.sad.toFixed(2)} angry ${sc.angry.toFixed(2)} conf ${sc.confused.toFixed(2)}` : "scores –",
         `head turn ${yaw.toFixed(0)}°`, face ? `real brow height ${((face.brows[0].height + face.brows[1].height) / 2).toFixed(3)}` : "no face",
         au ? `AU1 browInnerUp ${au.browInnerUp?.toFixed(2)}  AU2 outerUp ${(((au.browOuterUpLeft ?? 0) + (au.browOuterUpRight ?? 0)) / 2).toFixed(2)}  AU4 down ${(((au.browDownLeft ?? 0) + (au.browDownRight ?? 0)) / 2).toFixed(2)}` : "AU blendshapes: camera mode only",
       ].join("\n");

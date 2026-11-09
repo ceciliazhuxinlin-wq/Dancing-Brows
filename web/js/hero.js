@@ -4,7 +4,7 @@ import { demoScript } from "./demo.js";
 import { moodScores, MoodTracker, pickCue } from "./expression.js";
 
 const FACE = { w: 170, h: 210, ax: 200, eyeY: 142 };
-const EMO = { neutral: "🙂", happy: "😄", sad: "🥺", confused: "🤨" };
+const EMO = { neutral: "🙂", happy: "😄", sad: "🥺", angry: "😠", confused: "🤨" };
 const f = (n) => n.toFixed(1);
 
 export function startHero(svg, cueEl) {
@@ -28,7 +28,7 @@ export function startHero(svg, cueEl) {
     const specs = layoutSpecs(params, FACE.ax, FACE.eyeY, FACE.w, FACE.h, spacing, s.yaw);
     specs.forEach((sp, i) => b[i].setAttribute("d", "M" + sp.points().map((p) => `${f(p[0])} ${f(p[1])}`).join(" L")));
     const m = tracker.update(moodScores(params[0], params[1]), tSec * 1000);
-    const bend = m.mood === "happy" ? 16 : m.mood === "sad" ? -10 : m.mood === "confused" ? 2 : 8;
+    const bend = m.mood === "happy" ? 16 : m.mood === "sad" ? -10 : m.mood === "angry" ? -4 : m.mood === "confused" ? 2 : 8;
     mouth.setAttribute("d", `M170 220 Q200 ${220 + bend} 230 ${m.mood === "confused" ? 214 : 220}`);
     emo.textContent = EMO[m.mood];
     if (m.mood !== last) { if (m.mood !== "neutral") cueN++; cueEl.textContent = pickCue(m.mood, cueN); last = m.mood; }

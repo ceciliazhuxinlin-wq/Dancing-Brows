@@ -9,6 +9,7 @@ export const HANDBOOK = {
   moods: [
     { mood: "happy", emoji: "😄", name: "Happy", recipe: "Both hands open wide, brows in a symmetric arch.", effect: "Giggle + bouncing 😄 ✨" },
     { mood: "sad", emoji: "🥺", name: "Sad", recipe: "Both hands pinched (low U), or both brows tilted with the inner ends up.", effect: "Tear drops + a sad “womp womp”" },
+    { mood: "angry", emoji: "😠", name: "Angry", recipe: "Tilt both hands so the brows slope down towards your nose, like \\ /. Sad is the opposite, / \\.", effect: "Low growl + a stomp + shaking 💢" },
     { mood: "confused", emoji: "🤨", name: "Confused / goofy", recipe: "The brows disagree: one hand open and one pinched, or both tilted the same way.", effect: "Boing + floating ❓" },
   ],
   keys: [

@@ -4,7 +4,7 @@ export const STEPS = [
   { id: "hands", emoji: "✋", title: "Show me your hands", text: "Hold up one or both hands so the camera can see them. One hand controls both brows." },
   { id: "pinch", emoji: "🤏", title: "Pinch and open", text: "Close your thumb and finger for a low, U-shaped brow. Open them for a high arch." },
   { id: "tilt", emoji: "📐", title: "Tilt and spread", text: "Tilt a hand to rotate its brow. Move two hands apart or together to space the brows." },
-  { id: "face", emoji: "😄", title: "Make a face", text: "Two open hands look happy. Two pinched hands look sad. One of each looks confused." },
+  { id: "face", emoji: "😄", title: "Make a face", text: "Two open hands look happy. Two pinched hands look sad. Tilt both hands so the brows slope down to your nose (\\ /) for angry. One open and one pinched looks confused." },
   { id: "done", emoji: "📖", title: "You're set", text: "Press H any time for the handbook. Press ? to replay this tutorial." },
 ];
 
