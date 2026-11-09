@@ -1,4 +1,4 @@
-// Sound: three little effects (giggle / sad / confused) and an optional soft note voice.
+// Sound: four little effects (giggle / sad / angry / confused) and an optional soft note voice.
 // Effect functions take (ctx, out, t0) so they work with a live AudioContext AND an
 // OfflineAudioContext (that is how they are tested). Each returns its length in seconds.
 
@@ -51,6 +51,22 @@ export function sad(ctx, out, t0 = 0) {
   return 2.45;
 }
 
+/** Two low cartoon growls ("grrr, grrr") and a stomp. Sawtooth through a low-pass, with a fast tremolo for the rumble. */
+export function angry(ctx, out, t0 = 0) {
+  [[0.0, 0.5, 118, 92], [0.62, 0.42, 128, 84]].forEach(([at, dur, f0, f1]) => {
+    const t = t0 + at, osc = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
+    const lfo = ctx.createOscillator(), depth = ctx.createGain();
+    osc.type = "sawtooth"; osc.frequency.setValueAtTime(f0, t); osc.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    lp.type = "lowpass"; lp.frequency.setValueAtTime(700, t); lp.frequency.exponentialRampToValueAtTime(380, t + dur); lp.Q.value = 3;
+    lfo.frequency.value = 32; depth.gain.value = 9; lfo.connect(depth).connect(osc.frequency);   // the rumble
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.26, t + 0.05);
+    g.gain.setValueAtTime(0.26, t + dur * 0.65); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(lp).connect(g).connect(out); osc.start(t); lfo.start(t); osc.stop(t + dur + 0.02); lfo.stop(t + dur + 0.02);
+  });
+  blip(ctx, out, { t: t0 + 1.12, f0: 170, f1: 48, dur: 0.22, peak: 0.34, attack: 0.004 });          // stomp
+  return 1.4;
+}
+
 /** Two cartoon "boings" with a wobble. */
 export function confused(ctx, out, t0 = 0) {
   const t = t0, osc = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), depth = ctx.createGain();
@@ -66,7 +82,7 @@ export function confused(ctx, out, t0 = 0) {
   return 0.95;
 }
 
-export const EFFECTS = { happy: giggle, sad, confused };
+export const EFFECTS = { happy: giggle, sad, angry, confused };
 
 export class AudioEngine {
   constructor() { this.ctx = null; this.muted = false; this.effects = true; this.notes = false; this.voice = null; this.lastNote = null; }
