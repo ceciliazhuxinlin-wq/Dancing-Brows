@@ -6,12 +6,12 @@ Your hands puppeteer a cartoon eyebrow on a live webcam feed, and the brow's hei
 
 ## Web version (new)
 
-`web/` is a browser version you can open from the homepage, no install. It adds a skippable tutorial, an in-page handbook, a dark gesture.live-style stage, and **mood effects**: two open, arched brows read as *happy* (giggle + bouncing emoji), two pinched or drooping brows as *sad* (tears + a sad "womp womp"), and brows that disagree as *confused* (boing + floating question marks), each with a cue like "Are we sad now?".
+`web/` is a browser version you can open from the homepage, no install. It adds a skippable tutorial, an in-page handbook, a dark gesture.live-style stage, and **mood effects**: two open, arched brows read as *happy* (giggle + bouncing emoji), two pinched or drooping brows as *sad* (tears + a sad "womp womp"), brows that slope down towards the nose (\ /) as *angry* (low growl + stomp + shaking 💢), and brows that disagree as *confused* (boing + floating question marks), each with a cue like "Are we sad now?".
 
 ```bash
 cd web
 python3 -m http.server 8000      # then open http://localhost:8000  (camera needs localhost or https)
-npm test                         # 33 unit tests on the brow maths, hand identity, moods and tutorial logic
+npm test                         # 47 unit tests: brow maths, hand identity, moods, sound scheduling, tutorial logic
 ```
 
 - **Try the demo** needs no camera: scripted hands and a drawn face run the same brow, mood and sound code.
@@ -19,11 +19,11 @@ npm test                         # 33 unit tests on the brow maths, hand identit
 - Deploy: the workflow in `.github/workflows/pages.yml` publishes `web/` to GitHub Pages (Settings > Pages > Source: GitHub Actions).
 - How the mood is decided: `web/js/expression.js`. The thresholds were chosen by feel, not measured on users. Sounds are synthesised with the Web Audio API (`web/js/audio.js`).
 - Screenshots below are from **demo mode** (simulated hands and a drawn face), not a real camera session.
-- TODO: record a real-camera demo GIF of the three moods and put the live link here.
+- TODO: record a real-camera demo GIF of the four moods and put the live link here.
 
-| Happy | Sad | Confused |
-|---|---|---|
-| ![happy](assets/web-demo-happy.png) | ![sad](assets/web-demo-sad.png) | ![confused](assets/web-demo-confused.png) |
+| Happy | Sad | Angry | Confused |
+|---|---|---|---|
+| ![happy](assets/web-demo-happy.png) | ![sad](assets/web-demo-sad.png) | ![angry](assets/web-demo-angry.png) | ![confused](assets/web-demo-confused.png) |
 
 The Python/OpenCV app below is the original desktop prototype and the part that is benchmarked.
 
